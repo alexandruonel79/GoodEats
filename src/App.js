@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import DemoPage from './pages/DemoPage';
+import HomePage from './pages/HomePage';
+import './assets/styles.css';
 
-function App() {
+const App = () => {
+  const { token, role } = useAuth();
+
+  // Redirect based on role
+  const roleBasedRedirect = (role) => {
+    switch(role) {
+      case 'admin':
+        return <Navigate to="/demo" />;
+      case 'user':
+        return <Navigate to="/home" />;
+      default:
+        return <Navigate to="/login" />;
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        
+        {/* Protected Routes */}
+        {/* Redirect based on role */}
+        <Route path="/demo" element={role === 'admin' ? <DemoPage /> : roleBasedRedirect(role)} />
+        <Route path="/home" element={role === 'user' ? <HomePage /> : roleBasedRedirect(role)} />
+        
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
