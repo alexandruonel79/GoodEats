@@ -10,9 +10,9 @@ const protect = (req, res, next) => {
   }
 
   try {
-    console.log('token', token);
+    // console.log('token', token);
     // jwt secret print
-    console.log('jwt secret', process.env.JWT_SECRET);
+    // console.log('jwt secret', process.env.JWT_SECRET);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // Attach the decoded user information to the request object
     next();

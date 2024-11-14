@@ -11,6 +11,10 @@ const User = sequelize.define('User', {
       isEmail: true,
     },
   },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -18,6 +22,11 @@ const User = sequelize.define('User', {
   role: {
     type: DataTypes.ENUM('user', 'validated_user', 'admin'),
     defaultValue: 'user',
+  },
+  profilePicturePath: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'NULL',
   },
 }, {
   hooks: {

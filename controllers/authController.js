@@ -5,14 +5,23 @@ require('dotenv').config();
 // Register a new user
 const register = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password, name } = req.body;
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
       return res.status(400).json({ message: 'Email already in use' });
     }
 
-    const user = await User.create({ email, password, role });
+    // check existing name
+    const existingName = await User.findOne({ where: { name } });
+    if (existingName) {
+      return res.status(400).json({ message: 'Name already in use' });
+    }
+    
+    // Default role is 'user', but you can change this as needed
+    const role = 'user';
+
+    const user = await User.create({ email, password, name, role });
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error(error);
@@ -81,7 +90,7 @@ const changePassword = async (req, res) => {
 
     // Save the updated user (beforeUpdate hook will take care of hashing)
     await user.save();
-    console.log('Password changed successfully');
+    // console.log('Password changed successfully');
     res.status(200).json({ message: 'Password changed successfully' });
   } catch (error) {
     console.error(error);
