@@ -12,7 +12,6 @@ const DemoPage = () => {
     <div className="demo-container">
       <h2>Welcome to the Demo Page!</h2>
       {role === 'user' && <p>You have basic user permissions.</p>}
-      {role === 'restaurant_owner' && <p>You have restaurant owner permissions.</p>}
       {role === 'admin' && <p>You have admin permissions.</p>}
     </div>
   );

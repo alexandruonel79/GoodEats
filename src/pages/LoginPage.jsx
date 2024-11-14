@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Card, Typography, Container } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -14,43 +17,65 @@ const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/auth/login', 
+        'http://localhost:5000/api/auth/login',
         { email, password },
-        {
-          headers: {
-            'Content-Type': 'application/json', // Set the correct content type
-          },
-        }
+        { headers: { 'Content-Type': 'application/json' } }
       );
       const { token, role } = response.data;
+
+      // Show success toast
+      toast.success('Login succeeded!', {
+        position: "top-right",
+      });
+
+      // Wait for 1 second before redirecting to /home
+      setTimeout(() => {
+        navigate('/home');
+      }, 1000); // 1000ms = 1 second
+
+      // Call login function to save token and role
       login(token, role);
-      navigate('/demo');  // Redirect to demo page after login
     } catch (error) {
-      console.error('Error logging in:', error.response ? error.response.data : error.message);
+      // Show error toast with server error message
+      const errorMessage = error.response?.data?.message || 'Error logging in. Please try again.';
+      toast.error(errorMessage, {
+        position: "top-right",
+      });
     }
   };
 
   return (
-    <div className="form-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <Container maxWidth="sm" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+      <Card sx={{ p: 4, width: '100%', maxWidth: 400 }}>
+        <Typography variant="h5" align="center" gutterBottom>Login</Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Email"
+            type="email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <TextField
+            label="Password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Login
+          </Button>
+        </form>
+      </Card>
+      <ToastContainer />
+    </Container>
   );
 };
 

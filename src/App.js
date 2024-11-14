@@ -1,40 +1,98 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import DemoPage from './pages/DemoPage';
-import HomePage from './pages/HomePage';
-import './assets/styles.css';
+import UserHomePage from './pages/user/UserHomePage';
+import AdminHomePage from './pages/admin/AdminHomePage';
+import UserNavbar from './pages/user/UserNavbar';
+import AdminNavbar from './pages/admin/AdminNavbar';
+import ChangePassword from './pages/common/ChangePassword';
 
 const App = () => {
   const { token, role } = useAuth();
 
-  // Redirect based on role
-  const roleBasedRedirect = (role) => {
-    switch(role) {
-      case 'admin':
-        return <Navigate to="/demo" />;
-      case 'user':
-        return <Navigate to="/home" />;
-      default:
-        return <Navigate to="/login" />;
+  // Protecting routes based on user role and authentication
+  const ProtectedRoute = ({ children, allowedRoles }) => {
+    if (!token) {
+      return <Navigate to="/login" />; // Redirect to login if not authenticated
     }
+    if (!allowedRoles.includes(role)) {
+      return <Navigate to="/login" />; // Redirect if user doesn't have the required role
+    }
+    return children;
   };
 
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        {/* // change-password route */}
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute allowedRoles={['user', 'admin']}>
+              {/* Conditionally render the Navbar and Home Page */}
+              {role === 'user' && (
+                <>
+                  <UserNavbar />
+                  <ChangePassword />
+                </>
+              )}
+              {role === 'admin' && (
+                <>
+                  <AdminNavbar />
+                  <ChangePassword />
+                </>
+              )}
+            </ProtectedRoute>
+          }
+        />
         
         {/* Protected Routes */}
-        {/* Redirect based on role */}
-        <Route path="/demo" element={role === 'admin' ? <DemoPage /> : roleBasedRedirect(role)} />
-        <Route path="/home" element={role === 'user' ? <HomePage /> : roleBasedRedirect(role)} />
-        
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute allowedRoles={['user', 'admin']}>
+              {/* Conditionally render the Navbar and Home Page */}
+              {role === 'user' && (
+                <>
+                  <UserNavbar />
+                  <UserHomePage />
+                </>
+              )}
+              {role === 'admin' && (
+                <>
+                  <AdminNavbar />
+                  <AdminHomePage />
+                </>
+              )}
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Role-specific Home Pages */}
+        <Route
+          path="/adminHome"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminNavbar />
+              <AdminHomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userHome"
+          element={
+            <ProtectedRoute allowedRoles={['user']}>
+              <UserNavbar />
+              <UserHomePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
