@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Card, Typography, Container, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { TextField, Button, Card, Typography, Container } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user'); // Default role
+  const [name, setName] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:5000/api/auth/register', { email, password, role });
+      await axios.post('http://localhost:5000/api/auth/register', { email, password, name });
       toast.success('Registration successful! Redirecting to login...', {
         position: 'top-right',
         autoClose: 2000,
@@ -36,6 +36,16 @@ const RegisterPage = () => {
         <Typography variant="h5" align="center" gutterBottom>Register</Typography>
         <form onSubmit={handleSubmit}>
           <TextField
+            label="Name"
+            type="text"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <TextField
             label="Email"
             type="email"
             variant="outlined"
@@ -55,17 +65,6 @@ const RegisterPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Role</InputLabel>
-            <Select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              label="Role"
-            >
-              <MenuItem value="user">User</MenuItem>
-              <MenuItem value="admin">Admin</MenuItem>
-            </Select>
-          </FormControl>
           <Button type="submit" variant="contained" color="primary" fullWidth>
             Register
           </Button>

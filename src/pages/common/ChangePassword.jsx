@@ -43,9 +43,6 @@ const ChangePassword = () => {
 
       if (response.ok) {
         toast.success('Password changed successfully');
-        setTimeout(() => {
-          navigate('/account'); // Redirect to account page
-        }, 2000);
       } else {
         const data = await response.json();
         toast.error(data.message || 'Failed to change password');
