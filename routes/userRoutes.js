@@ -1,6 +1,6 @@
 const express = require('express');
 const { protect, authorize } = require('../middleware/authMiddleware');  // Import middleware
-const { likePost, likeComment, addComment, getAllPosts, createPost, upload} = require('../controllers/postController');
+const { likePost, likeComment, addComment, getAllPosts, createPost, upload, getUserProfilePicture} = require('../controllers/postController');
 const router = express.Router();
 
 
@@ -21,5 +21,8 @@ router.put('/posts/:postId/like', likePost);
 
 // like a comment using comment controller
 router.put('/comments/:commentId/like', likeComment);
+
+// get profile picture for a user by user id
+router.get('/profile-picture/:userId', getUserProfilePicture);
 
 module.exports = router;

@@ -26,7 +26,7 @@ const User = sequelize.define('User', {
   profilePicturePath: {
     type: DataTypes.STRING,
     allowNull: true,
-    defaultValue: 'NULL',
+    defaultValue: 'default.jpg',
   },
 }, {
   hooks: {

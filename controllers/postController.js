@@ -33,15 +33,31 @@ const createPost = async (req, res) => {
     }
 };
 
-// Get all posts
+// Get all posts, and get the image from uploads folder
+// the image is stored in uploads folder and the path is saved in the database
 const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.findAll({ include: [{ model: Comment, as: 'comments' }] });
-        res.status(200).json(posts);
+        const posts = await Post.findAll({
+            include: [
+                { model: User, as: 'user', attributes: ['name'] },
+                { model: Comment, as: 'comments', include: { model: User, as: 'user', attributes: ['name'] } },
+            ],
+        });
+
+        // Map through the posts and generate the full URL for the image path
+        const postsWithImages = posts.map((post) => {
+            return {
+                ...post.dataValues,
+                image: post.image ? `http://localhost:5000/${post.image.replace(/\\/g, '/')}` : null, // Replace \ with / for Windows compatibility
+            };
+        });
+
+        res.status(200).json(postsWithImages);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // Add a comment to a post
 const addComment = async (req, res) => {
@@ -81,5 +97,36 @@ const likeComment = async (req, res) => {
     }
 };
 
+const fs = require('fs');
+//getUserProfilePicture
+const getUserProfilePicture = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const profilePicturePath = 
+            user.profilePicturePath === 'default.jpg' 
+                ? 'uploads/default.jpg' 
+                : user.profilePicturePath;
+
+        // Check if the profile picture file exists
+        if (!fs.existsSync(profilePicturePath)) {
+            return res.status(404).json({ error: 'Profile picture not found' });
+        }
+
+        // Generate the full URL for the profile picture
+        const profilePictureUrl = `http://localhost:5000/${profilePicturePath.replace(/\\/g, '/')}`; // Replace \ with / for Windows compatibility
+
+        res.status(200).json({ profilePictureUrl });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 // Export the functions
-module.exports = { createPost, getAllPosts, addComment, likePost, likeComment, upload };
+module.exports = { createPost, getAllPosts, addComment, likePost, likeComment, upload, getUserProfilePicture };
