@@ -22,4 +22,8 @@ router.post("/logout", logout);
 // POST /api/auth/change-password - Change password, protected route
 router.post("/change-password", protect, changePassword);
 
+router.get("/get-user-id", protect, (req, res) => {
+  res.status(200).json({ id: req.user.id });
+});
+
 module.exports = router;

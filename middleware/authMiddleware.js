@@ -3,9 +3,12 @@ require('dotenv').config();
 
 // Middleware to protect routes and check user authentication
 const protect = (req, res, next) => {
+  // console.log("req.header('Authorization')", req.header('Authorization'));
   const token = req.header('Authorization')?.replace('Bearer ', '');
+  // console.log('token', token);
 
   if (!token) {
+    // console.log('No token, authorization denied');
     return res.status(401).json({ message: 'No token, authorization denied' });
   }
 

@@ -6,6 +6,11 @@ require('dotenv').config();
 const register = async (req, res) => {
   try {
     const { email, password, name } = req.body;
+    // check all fields are filled
+    if (!email || !password || !name) {
+      return res.status(400).json({ message: 'Please fill in all fields' });
+    }
+    
     const existingUser = await User.findOne({ where: { email } });
 
     if (existingUser) {
@@ -20,7 +25,7 @@ const register = async (req, res) => {
     
     // Default role is 'user', but you can change this as needed
     const role = 'user';
-
+    
     const user = await User.create({ email, password, name, role });
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
