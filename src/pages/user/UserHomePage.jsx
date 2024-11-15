@@ -1,108 +1,98 @@
-import React, { useState } from 'react';
-import './UserHomePage.css'; // Include custom CSS for styling
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import 'react-toastify/dist/ReactToastify.css';
+import './UserHomePage.css';
+import { useAuth } from '../../context/AuthContext';
 
 const UserHomePage = () => {
-  // Dummy data for posts, including profile pictures
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      user: { username: 'john_doe', profilePicture: 'https://via.placeholder.com/50' },
-      image: 'https://via.placeholder.com/300',
-      description: 'Beautiful sunset at the beach.',
-      likes: 10,
-      liked: false,  // Track if the current user liked the post
-      comments: [
-        { id: 1, text: 'Amazing view!', likes: 5, liked: false, user: { username: 'alice_smith', profilePicture: 'https://via.placeholder.com/50' } },
-        { id: 2, text: 'I love this!', likes: 2, liked: false, user: { username: 'bob_jones', profilePicture: 'https://via.placeholder.com/50' } },
-      ],
-    },
-    {
-      id: 2,
-      user: { username: 'jane_doe', profilePicture: 'https://via.placeholder.com/50' },
-      image: 'https://via.placeholder.com/300',
-      description: 'Exploring the city streets.',
-      likes: 7,
-      liked: false,  // Track if the current user liked the post
-      comments: [
-        { id: 1, text: 'Nice architecture!', likes: 3, liked: false, user: { username: 'charlie_brown', profilePicture: 'https://via.placeholder.com/50' } },
-      ],
-    },
-  ]);
-
-  const [newPost, setNewPost] = useState({
-    image: null,
-    description: '',
-  });
-  
+  const { token, role } = useAuth(); // Access token from the AuthContext
+  const [posts, setPosts] = useState([]);
+  const [newPost, setNewPost] = useState({ image: null, description: '' });
   const [newComment, setNewComment] = useState('');
-  const [userProfile, setUserProfile] = useState({ username: 'current_user', profilePicture: 'https://via.placeholder.com/50' });
+  const [userProfile, setUserProfile] = useState({
+    username: 'current_user',
+    profilePicture: 'https://via.placeholder.com/50',
+  });
+
+  // Fetch all posts from the API
+  useEffect(() => {
+    if (token) {
+      fetchPosts();
+    } else {
+      toast.error('You must be logged in to view posts.');
+    }
+  }, [token]); // Only fetch posts when token is available
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/user/posts', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Include token in the header
+        },
+      });
+      setPosts(response.data);
+    } catch (error) {
+      toast.error('Failed to load posts. Please try again later.');
+    }
+  };
 
   // Handle adding a new post
-  const handleAddPost = () => {
-    if (!newPost.description || !newPost.image) return;
-    const newPostData = {
-      ...newPost,
-      user: userProfile,
-      id: posts.length + 1,
-      likes: 0,
-      liked: false,
-      comments: [],
-    };
-    setPosts([newPostData, ...posts]); // Add new post at the beginning
-    setNewPost({ image: null, description: '' }); // Clear form
-    // Placeholder for API call to add a new post
+  const handleAddPost = async () => {
+    if (!newPost.description || !newPost.image) {
+      toast.error('Please provide both an image and a description to add a post!');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('description', newPost.description);
+      formData.append('image', newPost.image);
+
+      const response = await axios.post('http://localhost:5000/api/user/posts', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Important for sending FormData
+          Authorization: `Bearer ${token}`, // Include token in the header
+        },
+      });
+
+      toast.success('Post added successfully!');
+      fetchPosts(); // Refresh the post list
+      setNewPost({ image: null, description: '' });
+    } catch (error) {
+      toast.error('Failed to add post. Please try again.');
+    }
   };
 
   // Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewPost({ ...newPost, image: reader.result });
-      };
-      reader.readAsDataURL(file);
+      setNewPost({ ...newPost, image: file }); // Store file directly
     }
   };
 
-  // Handle liking/unliking a post
-  const handlePostLike = (postId) => {
-    setPosts(posts.map((post) =>
-      post.id === postId 
-        ? { 
-            ...post, 
-            likes: post.liked ? post.likes - 1 : post.likes + 1, 
-            liked: !post.liked // Toggle the like status
-          }
-        : post
-    ));
-  };
-
-  // Handle liking/unliking a comment
-  const handleCommentLike = (postId, commentId) => {
-    setPosts(posts.map((post) => ({
-      ...post,
-      comments: post.comments.map((comment) =>
-        comment.id === commentId
-          ? {
-              ...comment,
-              likes: comment.liked ? comment.likes - 1 : comment.likes + 1, // Toggle the like status
-              liked: !comment.liked, // Toggle the like status
-            }
-          : comment
-      ),
-    })));
-  };
-
-  // Handle adding a comment to a post
+  // Handle adding a comment
   const handleAddComment = (postId) => {
-    if (!newComment) return;
+    if (!newComment) {
+      toast.error('Please enter a comment before posting!');
+      return;
+    }
     const comment = { id: Date.now(), text: newComment, likes: 0, liked: false, user: userProfile };
     setPosts(posts.map((post) =>
       post.id === postId ? { ...post, comments: [comment, ...post.comments] } : post
     ));
     setNewComment('');
   };
+
+  if (!token) {
+    return (
+      <div className="user-home-page">
+        <h2>You must be logged in to access this page.</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="user-home-page">
@@ -113,13 +103,9 @@ const UserHomePage = () => {
           value={newPost.description}
           onChange={(e) => setNewPost({ ...newPost, description: e.target.value })}
         />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
+        <input type="file" accept="image/*" onChange={handleImageChange} />
         <button onClick={handleAddPost}>Add Post</button>
-        {newPost.image && <img src={newPost.image} alt="New Post" className="preview-image" />}
+        {newPost.image && <img src={URL.createObjectURL(newPost.image)} alt="New Post" className="preview-image" />}
       </div>
 
       <div className="post-list">
@@ -133,15 +119,9 @@ const UserHomePage = () => {
               <div className="post-description">
                 <p>{post.description}</p>
               </div>
-              <button
-                onClick={() => handlePostLike(post.id)}
-                className={`like-btn ${post.liked ? 'liked' : ''}`}
-              >
-                ❤️ {post.likes}
-              </button>
             </div>
             <img src={post.image} alt="Post" className="post-image" />
-            
+
             <div className="comments-section">
               {post.comments.map((comment) => (
                 <div key={comment.id} className="comment">
@@ -150,11 +130,6 @@ const UserHomePage = () => {
                     <p>{comment.user.username}</p>
                   </div>
                   <p>{comment.text}</p>
-                  <div className="comment-actions">
-                    <button onClick={() => handleCommentLike(post.id, comment.id)} className="like-btn">
-                      ❤️ {comment.likes}
-                    </button>
-                  </div>
                 </div>
               ))}
               <div className="add-comment">
@@ -164,7 +139,7 @@ const UserHomePage = () => {
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                 />
-                <button onClick={() => handleAddComment(post.id)} className="comment-btn">Post</button>
+                <button onClick={() => handleAddComment(post.id)}>Post</button>
               </div>
             </div>
           </div>
