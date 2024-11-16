@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";  // Import ToastContainer
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import "./UserHomePage.css";
@@ -9,7 +9,7 @@ const UserHomePage = () => {
   const { token } = useAuth(); // Access token from the AuthContext
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ image: null, description: "" });
-  const [newComment, setNewComment] = useState("");
+  const [newComments, setNewComments] = useState({}); // Store comments for each post
   const profilePictureCache = new Map(); // Cache for profile pictures
 
   // Fetch all posts from the API
@@ -29,11 +29,12 @@ const UserHomePage = () => {
         },
       });
   
-      const postsWithProfilePics = await Promise.all(
+      const postsWithDetails = await Promise.all(
         response.data.map(async (post) => {
-          const userId = post.userId; // Use `userId` from the response
-          let profilePictureUrl = "https://via.placeholder.com/50"; // Default placeholder
+          const userId = post.userId;
+          let profilePictureUrl = "https://via.placeholder.com/50";
   
+          // Fetch profile picture for the post's user
           if (userId) {
             if (profilePictureCache.has(userId)) {
               profilePictureUrl = profilePictureCache.get(userId);
@@ -47,31 +48,98 @@ const UserHomePage = () => {
                     },
                   }
                 );
-                profilePictureUrl = profilePictureResponse.data.profilePictureUrl; // Use the correct field name
-                console.log(`Fetched profile picture URL for user ${userId}:`, profilePictureUrl); // Debug log
-                profilePictureCache.set(userId, profilePictureUrl); // Cache the result
+                profilePictureUrl =
+                  profilePictureResponse.data.profilePictureUrl;
+                profilePictureCache.set(userId, profilePictureUrl);
               } catch (error) {
-                console.error(`Failed to fetch profile picture for user ID ${userId}`, error);
+                console.error(
+                  `Failed to fetch profile picture for user ID ${userId}`,
+                  error
+                );
               }
-              
-              
             }
-          } else {
-            console.warn(`No user ID found for post ID: ${post.id}`);
           }
   
-          return { ...post, profilePictureUrl }; // Add profile picture URL to post object
+          // Check if the post is already liked by the user
+          const postLikeResponse = await axios.get(
+            `http://localhost:5000/api/user/posts/${post.id}/liked`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const isPostLiked = postLikeResponse.data.userLikedPost;
+  
+          // Pre-fetch profile pictures for comment users
+          const commentsWithPictures = await Promise.all(
+            post.comments.map(async (comment) => {
+              const commentUserId = comment.userId;
+              let commentProfilePictureUrl = "https://via.placeholder.com/50";
+  
+              if (commentUserId) {
+                if (profilePictureCache.has(commentUserId)) {
+                  commentProfilePictureUrl = profilePictureCache.get(
+                    commentUserId
+                  );
+                } else {
+                  try {
+                    const response = await axios.get(
+                      `http://localhost:5000/api/user/profile-picture/${commentUserId}`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      }
+                    );
+                    commentProfilePictureUrl = response.data.profilePictureUrl;
+                    profilePictureCache.set(
+                      commentUserId,
+                      commentProfilePictureUrl
+                    );
+                  } catch (error) {
+                    console.error(
+                      `Failed to fetch profile picture for comment user ID ${commentUserId}`,
+                      error
+                    );
+                  }
+                }
+              }
+  
+              // Check if the comment is already liked by the user
+              const commentLikeResponse = await axios.get(
+                `http://localhost:5000/api/user/comments/${comment.id}/liked`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              const isCommentLiked = commentLikeResponse.data.userLikedComment;
+  
+              return {
+                ...comment,
+                profilePictureUrl: commentProfilePictureUrl,
+                isLiked: isCommentLiked, // Set the like status for comments
+              };
+            })
+          );
+  
+          return {
+            ...post,
+            profilePictureUrl,
+            comments: commentsWithPictures,
+            isLiked: isPostLiked, // Set the like status for the post
+          };
         })
       );
   
-      setPosts(postsWithProfilePics);
+      setPosts(postsWithDetails);
     } catch (error) {
       console.error("Error fetching posts:", error);
       toast.error("Failed to load posts. Please try again later.");
     }
   };
-  
-  
   
 
   const handleAddPost = async () => {
@@ -108,7 +176,8 @@ const UserHomePage = () => {
   };
 
   const handleAddComment = async (postId) => {
-    if (!newComment) {
+    const comment = newComments[postId];
+    if (!comment) {
       toast.error("Please enter a comment before posting!");
       return;
     }
@@ -116,7 +185,7 @@ const UserHomePage = () => {
     try {
       await axios.post(
         `http://localhost:5000/api/user/posts/${postId}/comments`,
-        { content: newComment },
+        { text: comment },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -125,10 +194,71 @@ const UserHomePage = () => {
       );
 
       toast.success("Comment added successfully!");
-      setNewComment("");
+      setNewComments({ ...newComments, [postId]: "" }); // Reset comment for this post
       fetchPosts(); // Refresh the posts to update comments
     } catch (error) {
       toast.error("Failed to add comment. Please try again.");
+    }
+  };
+
+  const handleLikePost = async (postId, isLiked) => {
+    const apiUrl = isLiked
+      ? `http://localhost:5000/api/user/posts/${postId}/unlike`
+      : `http://localhost:5000/api/user/posts/${postId}/like`;
+
+    try {
+      await axios.post(
+        apiUrl,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Toggle like status in local state
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId ? { ...post, isLiked: !isLiked } : post
+        )
+      );
+
+      toast.success(isLiked ? "Post unliked!" : "Post liked!");
+    } catch (error) {
+      toast.error("Failed to toggle like. Please try again.");
+    }
+  };
+
+  const handleLikeComment = async (commentId, isLiked) => {
+    const apiUrl = isLiked
+      ? `http://localhost:5000/api/user/comments/${commentId}/unlike`
+      : `http://localhost:5000/api/user/comments/${commentId}/like`;
+
+    try {
+      await axios.post(
+        apiUrl,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update the comment's like status in the local state
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => ({
+          ...post,
+          comments: post.comments.map((comment) =>
+            comment.id === commentId ? { ...comment, isLiked: !isLiked } : comment
+          ),
+        }))
+      );
+
+      toast.success(isLiked ? "Comment unliked!" : "Comment liked!");
+    } catch (error) {
+      toast.error("Failed to toggle like. Please try again.");
     }
   };
 
@@ -147,7 +277,9 @@ const UserHomePage = () => {
           type="text"
           placeholder="Description"
           value={newPost.description}
-          onChange={(e) => setNewPost({ ...newPost, description: e.target.value })}
+          onChange={(e) =>
+            setNewPost({ ...newPost, description: e.target.value })
+          }
         />
         <input type="file" accept="image/*" onChange={handleImageChange} />
         <button onClick={handleAddPost}>Add Post</button>
@@ -166,7 +298,7 @@ const UserHomePage = () => {
             <div className="post-header">
               <div className="user-profile">
                 <img
-                  src={post.profilePictureUrl} // Use fetched profile picture
+                  src={post.profilePictureUrl}
                   alt="User Profile"
                   className="user-avatar"
                 />
@@ -176,30 +308,61 @@ const UserHomePage = () => {
             <div className="post-body">
               <p className="post-description">{post.description}</p>
               <img src={post.image} alt="Post" className="post-image" />
-            </div>
-
-            <div className="comments-section">
-              {post.comments.map((comment) => (
-                <div key={comment.id} className="comment">
-                  <div className="user-profile">
-                    <p>{comment.user?.name || "Anonymous"}</p>
+              <div className="like-button-container">
+                <button
+                  onClick={() => handleLikePost(post.id, post.isLiked)}
+                  className="like-button"
+                >
+                  {post.isLiked ? "Unlike" : "Like"} Post
+                </button>
+              </div>
+              <div className="comments">
+                {post.comments.map((comment) => (
+                  <div key={comment.id} className="comment">
+                    <div className="comment-header">
+                      <img
+                        src={comment.profilePictureUrl}
+                        alt="User Profile"
+                        className="comment-avatar"
+                      />
+                      <p className="comment-user-name">{comment.user?.name}</p>
+                    </div>
+                    <p>{comment.text}</p>
+                    <div className="like-button-container">
+                      <button
+                        onClick={() =>
+                          handleLikeComment(comment.id, comment.isLiked)
+                        }
+                        className="like-button"
+                      >
+                        {comment.isLiked ? "Unlike" : "Like"} Comment
+                      </button>
+                    </div>
                   </div>
-                  <p>{comment.content}</p>
+                ))}
+                <div className="add-comment">
+                  <input
+                    type="text"
+                    value={newComments[post.id] || ""}
+                    onChange={(e) =>
+                      setNewComments({
+                        ...newComments,
+                        [post.id]: e.target.value,
+                      })
+                    }
+                    placeholder="Add a comment..."
+                  />
+                  <button onClick={() => handleAddComment(post.id)}>
+                    Add Comment
+                  </button>
                 </div>
-              ))}
-              <div className="add-comment">
-                <input
-                  type="text"
-                  placeholder="Add a comment..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                />
-                <button onClick={() => handleAddComment(post.id)}>Post</button>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      <ToastContainer />
     </div>
   );
 };
