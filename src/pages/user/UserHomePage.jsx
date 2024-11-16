@@ -302,6 +302,10 @@ const UserHomePage = () => {
                   alt="User Profile"
                   className="user-avatar"
                 />
+                {/* <p className="post-time">{post.createdAt}</p> */}
+                {/* // format the date
+                 */}
+                <p className="post-time">{post.createdAt}</p>
                 <p className="user-name">{post.user?.name || "Unknown User"}</p>
               </div>
             </div>
@@ -315,6 +319,8 @@ const UserHomePage = () => {
                 >
                   {post.isLiked ? "Unlike" : "Like"} Post
                 </button>
+                {/* add the like count */}
+                <p className="like-count">{post.likes} Likes </p>
               </div>
               <div className="comments">
                 {post.comments.map((comment) => (
