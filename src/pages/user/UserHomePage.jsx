@@ -224,6 +224,15 @@ const UserHomePage = () => {
         )
       );
 
+      // Update the like count
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, likes: isLiked ? post.likes - 1 : post.likes + 1 }
+            : post
+        )
+      );
+
       toast.success(isLiked ? "Post unliked!" : "Post liked!");
     } catch (error) {
       toast.error("Failed to toggle like. Please try again.");
@@ -252,6 +261,18 @@ const UserHomePage = () => {
           ...post,
           comments: post.comments.map((comment) =>
             comment.id === commentId ? { ...comment, isLiked: !isLiked } : comment
+          ),
+        }))
+      );
+
+      // Update the like count
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => ({
+          ...post,
+          comments: post.comments.map((comment) =>
+            comment.id === commentId
+              ? { ...comment, likes: isLiked ? comment.likes - 1 : comment.likes + 1 }
+              : comment
           ),
         }))
       );
@@ -332,8 +353,10 @@ const UserHomePage = () => {
                         className="comment-avatar"
                       />
                       <p className="comment-user-name">{comment.user?.name}</p>
+                      <p className="comment-time">{comment.createdAt}</p>
                     </div>
                     <p>{comment.text}</p>
+                    <p className="like-count">{comment.likes} Likes</p>
                     <div className="like-button-container">
                       <button
                         onClick={() =>
