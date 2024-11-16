@@ -15,6 +15,10 @@ const Post = sequelize.define('Post', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  likedBy: {
+    type: DataTypes.JSONB,  // Store an array of user IDs
+    defaultValue: [],       // Initialize as an empty array
+  },
 }, {
   timestamps: true, // Adds createdAt and updatedAt fields
 });
