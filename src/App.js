@@ -8,6 +8,7 @@ import AdminHomePage from './pages/admin/AdminHomePage';
 import UserNavbar from './pages/user/UserNavbar';
 import AdminNavbar from './pages/admin/AdminNavbar';
 import ChangePassword from './pages/common/ChangePassword';
+import UserRestaurants from './pages/user/UserRestaurants';
 
 const App = () => {
   const { token, role } = useAuth();
@@ -93,6 +94,18 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* User Restaurants Page */}
+        <Route
+          path="/restaurants"
+          element={
+            <ProtectedRoute allowedRoles={['user']}>
+              <UserNavbar />
+              <UserRestaurants />
+            </ProtectedRoute>
+          }
+        />
+        
       </Routes>
     </Router>
   );
