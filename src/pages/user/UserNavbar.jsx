@@ -57,6 +57,9 @@ const UserNavbar = () => {
           <Button component={Link} to="/restaurants" color="inherit">
             Restaurants
           </Button>
+          <Button component={Link} to="/map" color="inherit">
+            Map
+          </Button>
           <IconButton color="inherit" onClick={handleClick}>
             <AccountCircle />
           </IconButton>

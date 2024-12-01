@@ -9,6 +9,7 @@ import UserNavbar from './pages/user/UserNavbar';
 import AdminNavbar from './pages/admin/AdminNavbar';
 import ChangePassword from './pages/common/ChangePassword';
 import UserRestaurants from './pages/user/UserRestaurants';
+import UserMap from './pages/user/UserMap';
 
 const App = () => {
   const { token, role } = useAuth();
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/map" element={<UserMap />} />
         {/* // change-password route */}
         <Route
           path="/change-password"
@@ -105,7 +107,16 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        
+        {/* User Map Page */}
+        <Route
+          path="/map"
+          element={
+            <ProtectedRoute allowedRoles={['user']}>
+              <UserNavbar />
+              <UserMap />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

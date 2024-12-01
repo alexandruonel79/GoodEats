@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@arcgis/core": "^4.31.6",
+    "@arcgis/map-components": "^4.31.6",
+    "@arcgis/map-components-react": "^4.31.6",
+    "@babel/preset-env": "^7.26.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.7",
