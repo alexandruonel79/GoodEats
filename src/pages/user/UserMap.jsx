@@ -1,17 +1,22 @@
 import React, { useEffect, useRef } from "react";
 import { Box, Typography, Container } from "@mui/material";
+import { useAuth } from "../../context/AuthContext";
 // Import modules directly from @arcgis/core
 import WebMap from "@arcgis/core/WebMap";
 import MapView from "@arcgis/core/views/MapView";
 import esriConfig from "@arcgis/core/config";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import Graphic from "@arcgis/core/Graphic";
+
 
 const UserMap = () => {
   const mapRef = useRef(null);
+  const { token } = useAuth();
 
   useEffect(() => {
     let view;
 
-    const initializeMap = () => {
+    const initializeMap = async () => {
       try {
         // Set the API key
         esriConfig.apiKey =
@@ -29,6 +34,57 @@ const UserMap = () => {
           container: mapRef.current, // Reference to the container
           map: webMap, // Reference to the WebMap
         });
+
+        // Add GraphicsLayer to the map
+        const graphicsLayer = new GraphicsLayer();
+        webMap.add(graphicsLayer);
+
+        // Fetch data from your database
+        const data = await fetchPointsFromDatabase();
+
+        // Add points as Graphics to the GraphicsLayer
+        data.forEach((item) => {
+          const point = {
+            type: "point",
+            longitude: item.longitude,
+            latitude: item.latitude,
+          };
+        
+          const symbol = {
+            type: "simple-marker",
+            color: "blue",
+            size: "8px",
+            outline: {
+              color: "white",
+              width: 1,
+            },
+          };
+        
+          const popupTemplate = {
+            title: "{name}",
+            content: `
+              <b>Cuisine:</b> {cuisine}<br>
+              <b>Rating:</b> {rating}<br>
+              <b>Website:</b> <a href="{website}" target="_blank">{website}</a>
+            `,
+          };
+        
+          const attributes = {
+            name: item.name,
+            rating: item.rating,
+            website: item.website,
+            cuisine: item.cuisine,
+          };
+        
+          const graphic = new Graphic({
+            geometry: point,
+            symbol: symbol,
+            attributes: attributes,
+            popupTemplate: popupTemplate,
+          });
+        
+          graphicsLayer.add(graphic);
+        });        
       } catch (error) {
         console.error("Error initializing the map:", error);
       }
@@ -43,6 +99,32 @@ const UserMap = () => {
       }
     };
   }, []);
+
+  // Simulate fetching data from an API
+  const fetchPointsFromDatabase = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/restaurant/get-all", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log("Fetched data:", data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching points from database:", error);
+      return [];
+    }
+  };
+  
+  
 
   return (
     <Container maxWidth="lg">
