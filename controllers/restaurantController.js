@@ -3,10 +3,9 @@ const Restaurant = require("../models/Restaurant");
 // add restaurant
 const addRestaurant = async (req, res) => {
   // tie it to the user
-  const userId = req.user.id;
   const { name, location, category } = req.body;
   try {
-    const restaurant = await Restaurant.create({ name, location, category, userId });
+    const restaurant = await Restaurant.create({ name, longitude, latitude, cuisine, rating, website, validated });
     res.status(201).json(restaurant);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -79,8 +78,7 @@ const deleteRestaurant = async (req, res) => {
 const getAllApprovedRestaurants = async (req, res) => {
   try {
    // all restaurants added by the user
-   const userId = req.user.id;
-    const restaurants = await Restaurant.findAll({ where: { userId, validated: true } });
+    const restaurants = await Restaurant.findAll({ where: { validated: true } });
     res.status(200).json(restaurants);
   }
   catch (error) {
@@ -92,8 +90,7 @@ const getAllApprovedRestaurants = async (req, res) => {
 const getAllDeniedRestaurants = async (req, res) => {
   try {
     // all restaurants added by the user
-    const userId = req.user.id;
-    const restaurants = await Restaurant.findAll({ where: { userId, validated: false } });
+    const restaurants = await Restaurant.findAll({ where: { validated: false } });
     res.status(200).json(restaurants);
   }
   catch (error) {

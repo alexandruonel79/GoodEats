@@ -9,34 +9,34 @@ const Restaurant = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    location: {
-      type: DataTypes.STRING,
+    longitude: {
+      type: DataTypes.DOUBLE,
       allowNull: false,
     },
-    category: {
-      type: DataTypes.STRING,
+    latitude: {
+      type: DataTypes.DOUBLE,
       allowNull: false,
     },
+    cuisine: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    rating: {
+      type: DataTypes.DOUBLE,
+      allowNull: false
+    },
+    website: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },  
     validated: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
-    },
-    userId: { // Add foreign key
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Users", // Sequelize automatically pluralizes the model name
-        key: "id",
-      },
     },
   },
   {
     timestamps: true,
   }
 );
-
-// Define associations
-User.hasMany(Restaurant, { foreignKey: "userId", as: "restaurants" });
-Restaurant.belongsTo(User, { foreignKey: "userId", as: "user" });
 
 module.exports = Restaurant;
