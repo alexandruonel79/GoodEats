@@ -1,0 +1,295 @@
+.user-home-page {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .add-post {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .add-post input[type="text"],
+  .add-post input[type="file"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .add-post button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-post button:hover {
+    background-color: #0056b3;
+  }
+  
+  .preview-image {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+  }
+  
+  .post-list {
+    margin-top: 20px;
+  }
+  
+  .post {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+  
+  .post-description {
+    flex-grow: 1;
+  }
+  
+  .like-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .like-btn.liked {
+    color: red;
+  }
+  
+  .post-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+  }
+  
+  .comments-section {
+    padding: 10px;
+    background-color: #f7f7f7;
+  }
+  
+  .comment {
+    background-color: #fff;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+  }
+  
+  .add-comment {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .add-comment input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .comment-btn {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .comment-btn:hover {
+    background-color: #218838;
+  }
+  .post {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+  
+  .post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .user-name {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  .post-body {
+    margin-top: 10px;
+  }
+  
+  .post-description {
+    font-size: 1em;
+    margin-bottom: 10px;
+  }
+  
+  .post-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  .comments-section {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .comment {
+    margin-bottom: 10px;
+  }
+  
+  .add-comment {
+    display: flex;
+    align-items: center;
+  }
+  
+  .add-comment input {
+    flex: 1;
+    padding: 5px;
+    margin-right: 10px;
+  }
+  
+  .add-comment button {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  /* Style for the user profile image (circular) */
+.user-avatar, .comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Makes the image circular */
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  margin-right: 10px; /* Adds some space between the image and the text */
+}
+
+/* Style for the comment section */
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+/* Style for the Like button */
+.like-button {
+  background-color: #007bff; /* Blue background for the like button */
+  color: white; /* White text color */
+  border: none; /* Removes border */
+  padding: 8px 16px; /* Adds padding */
+  border-radius: 20px; /* Rounded corners */
+  cursor: pointer; /* Makes it look clickable */
+  font-size: 14px; /* Sets the font size */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.like-button:hover {
+  background-color: #0056b3; /* Darker blue when hovered */
+}
+
+.like-button:disabled {
+  background-color: #d3d3d3; /* Gray background when disabled */
+  cursor: not-allowed; /* Disable cursor when button is disabled */
+}
+
+/* Comment section style */
+.comment {
+  margin-bottom: 15px;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+/* Style for the comment's profile image (circle) */
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+/* Position like button below the text */
+.comment-footer {
+  display: flex;
+  justify-content: flex-start; /* Align the button to the left */
+  margin-top: 10px;
+}
+
+/* Post section style */
+.post {
+  margin-bottom: 25px;
+}
+
+.post-body {
+  margin-bottom: 15px;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: flex-start; /* Align the button to the left */
+  margin-top: 10px;
+}
+
+.delete-button {
+  background-color: #dc3545; /* Red background for the delete button */
+  color: white; /* White text color */
+  border: none; /* Removes border */
+  padding: 8px 16px; /* Adds padding */
+  border-radius: 20px; /* Rounded corners */
+  cursor: pointer; /* Makes it look clickable */
+  font-size: 14px; /* Sets the font size */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+  
+  
+  

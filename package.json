@@ -11,7 +11,9 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.7",
     "@mui/material": "^6.1.7",
+    "@mui/x-data-grid": "^7.23.1",
     "@nextui-org/react": "^2.4.8",
+    "@react-spring/web": "^9.7.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -21,6 +23,7 @@
     "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.6",
+    "react-typing-effect": "^2.0.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

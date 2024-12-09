@@ -369,7 +369,7 @@ const UserHomePage = () => {
                     </div>
                   </div>
                 ))}
-                <div className="add-comment">
+                <div className="add-post">
                   <input
                     type="text"
                     value={newComments[post.id] || ""}

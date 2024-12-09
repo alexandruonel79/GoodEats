@@ -1,0 +1,63 @@
+/* Ensures the page takes up the full height of the viewport */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+  }
+  
+  .home-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    height: 100%;
+    background-color: #f4f7fc;
+    box-sizing: border-box;
+  }
+  
+  h2 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  
+  .stat {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px;
+    transition: transform 0.3s ease-in-out;
+    flex-shrink: 0; /* Prevent shrinking */
+  }
+  
+  .stat:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .stat h3 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #555;
+  }
+  
+  .stat p {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0;
+    color: #007BFF;
+  }
+  

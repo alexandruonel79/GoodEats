@@ -12,7 +12,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify"; // Import ToastContainer here
 import { useAuth } from "../../context/AuthContext";
 
 const UserRestaurants = () => {
@@ -20,10 +20,13 @@ const UserRestaurants = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [newRestaurant, setNewRestaurant] = useState({
     name: "",
-    location: "",
-    category: "",
+    longitude: "",
+    latitude: "",
+    cuisine: "",
+    rating: "",
+    website: "",
   });
-  const [filter, setFilter] = useState("approved"); // Filter for approved/denied restaurants
+  const [filter, setFilter] = useState("approved"); // Filter for approved/denied/pending restaurants
 
   // Fetch restaurants based on filter
   useEffect(() => {
@@ -35,10 +38,20 @@ const UserRestaurants = () => {
   }, [token, filter]);
 
   const fetchRestaurants = async () => {
-    const endpoint =
-      filter === "approved"
-        ? "http://localhost:5000/api/restaurant/get-approved"
-        : "http://localhost:5000/api/restaurant/get-denied";
+    let endpoint;
+    switch (filter) {
+      case "approved":
+        endpoint = "http://localhost:5000/api/restaurant/get-approved";
+        break;
+      case "denied":
+        endpoint = "http://localhost:5000/api/restaurant/get-denied";
+        break;
+      case "pending":
+        endpoint = "http://localhost:5000/api/restaurant/get-pending";
+        break;
+      default:
+        return;
+    }
 
     try {
       const response = await fetch(endpoint, {
@@ -53,6 +66,7 @@ const UserRestaurants = () => {
 
       const data = await response.json();
       setRestaurants(data);
+      // toast.success("Restaurants fetched successfully!");
     } catch (error) {
       console.error(error);
       toast.error("Could not fetch restaurants.");
@@ -77,7 +91,14 @@ const UserRestaurants = () => {
       const addedRestaurant = await response.json();
       toast.success("Restaurant added successfully!");
       setRestaurants([...restaurants, addedRestaurant]);
-      setNewRestaurant({ name: "", location: "", category: "" });
+      setNewRestaurant({
+        name: "",
+        longitude: "",
+        latitude: "",
+        cuisine: "",
+        rating: "",
+        website: "",
+      });
     } catch (error) {
       console.error(error);
       toast.error("Could not add restaurant.");
@@ -112,21 +133,51 @@ const UserRestaurants = () => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Location"
+              label="Longitude"
               fullWidth
-              value={newRestaurant.location}
+              value={newRestaurant.longitude}
               onChange={(e) =>
-                setNewRestaurant({ ...newRestaurant, location: e.target.value })
+                setNewRestaurant({ ...newRestaurant, longitude: e.target.value })
               }
             />
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label="Category"
+              label="Latitude"
               fullWidth
-              value={newRestaurant.category}
+              value={newRestaurant.latitude}
               onChange={(e) =>
-                setNewRestaurant({ ...newRestaurant, category: e.target.value })
+                setNewRestaurant({ ...newRestaurant, latitude: e.target.value })
+              }
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Cuisine"
+              fullWidth
+              value={newRestaurant.cuisine}
+              onChange={(e) =>
+                setNewRestaurant({ ...newRestaurant, cuisine: e.target.value })
+              }
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Rating"
+              fullWidth
+              value={newRestaurant.rating}
+              onChange={(e) =>
+                setNewRestaurant({ ...newRestaurant, rating: e.target.value })
+              }
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Website"
+              fullWidth
+              value={newRestaurant.website}
+              onChange={(e) =>
+                setNewRestaurant({ ...newRestaurant, website: e.target.value })
               }
             />
           </Grid>
@@ -156,6 +207,9 @@ const UserRestaurants = () => {
           <ToggleButton value="denied" aria-label="denied">
             Denied
           </ToggleButton>
+          <ToggleButton value="pending" aria-label="pending">
+            Pending
+          </ToggleButton>
         </ToggleButtonGroup>
       </Box>
 
@@ -164,7 +218,9 @@ const UserRestaurants = () => {
         <Typography variant="h5" gutterBottom>
           {filter === "approved"
             ? "Approved Restaurants"
-            : "Denied Restaurants"}
+            : filter === "denied"
+            ? "Denied Restaurants"
+            : "Pending Restaurants"}
         </Typography>
         <Grid container spacing={2}>
           {restaurants.length === 0 ? (
@@ -181,7 +237,7 @@ const UserRestaurants = () => {
                       {restaurant.location} - {restaurant.category}
                     </Typography>
                     <Typography variant="body2">
-                      Validated: {restaurant.validated ? "Yes" : "No"}
+                      Validated: {restaurant.validated}
                     </Typography>
                   </CardContent>
                   <CardActions>
@@ -196,6 +252,9 @@ const UserRestaurants = () => {
           )}
         </Grid>
       </Box>
+
+      {/* Add Toastify Container here */}
+      <ToastContainer />
     </Container>
   );
 };

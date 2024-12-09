@@ -42,14 +42,26 @@ const AdminNavbar = () => {
       console.error('Logout error:', error);
     }
   };
+    // Redirect function
+    const handleRedirect = () => {
+      navigate("/home"); // Redirect to the desired route
+    };
 
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
+        <Typography variant="h6" style={{ flexGrow: 1 }} onClick={handleRedirect}>
           Admin Dashboard
         </Typography>
         {/* Navigation buttons */}
+        <Button color="inherit" component={Link} to="/admin-restaurants-dashboard">
+          Manage Restaurants
+        </Button>
+        
+        <Button color="inherit" component={Link} to="/manage-posts">
+          Manage Posts
+        </Button>
+
         <Button color="inherit" component={Link} to="/logs">
           Logs
         </Button>
