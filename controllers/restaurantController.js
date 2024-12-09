@@ -2,10 +2,10 @@ const Restaurant = require("../models/Restaurant");
 
 // add restaurant
 const addRestaurant = async (req, res) => {
-  // tie it to the user
-  const { name, location, category } = req.body;
+  // tie it to the user 
+  const { name, longitude, latitude, cuisine, rating, website } = req.body;
   try {
-    const restaurant = await Restaurant.create({ name, longitude, latitude, cuisine, rating, website, validated });
+    const restaurant = await Restaurant.create({ name, longitude, latitude, cuisine, rating, website });
     res.status(201).json(restaurant);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -32,7 +32,8 @@ const approveRestaurant = async (req, res) => {
       return res.status(404).json({ error: "Restaurant not found" });
     }
 
-    restaurant.validated = true;
+    // set validated to approved, validated is a string
+    restaurant.validated = "approved";
     await restaurant.save();
     res.status(200).json(restaurant);
   } catch (error) {
@@ -49,10 +50,22 @@ const denyRestaurant = async (req, res) => {
       return res.status(404).json({ error: "Restaurant not found" });
     }
 
-    restaurant.validated = false;
+    restaurant.validated = "denied";
     await restaurant.save();
     res.status(200).json(restaurant);
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// get all pending restaurants
+const getAllPendingRestaurants = async (req, res) => {
+  try {
+    // all restaurants added by the user
+    const restaurants = await Restaurant.findAll({ where: { validated: "pending" } });
+    res.status(200).json(restaurants);
+  }
+  catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
@@ -78,7 +91,7 @@ const deleteRestaurant = async (req, res) => {
 const getAllApprovedRestaurants = async (req, res) => {
   try {
    // all restaurants added by the user
-    const restaurants = await Restaurant.findAll({ where: { validated: true } });
+    const restaurants = await Restaurant.findAll({ where: { validated: "approved" } });
     res.status(200).json(restaurants);
   }
   catch (error) {
@@ -90,7 +103,7 @@ const getAllApprovedRestaurants = async (req, res) => {
 const getAllDeniedRestaurants = async (req, res) => {
   try {
     // all restaurants added by the user
-    const restaurants = await Restaurant.findAll({ where: { validated: false } });
+    const restaurants = await Restaurant.findAll({ where: { validated: "denied" } });
     res.status(200).json(restaurants);
   }
   catch (error) {
@@ -106,5 +119,6 @@ module.exports = {
   denyRestaurant,
   deleteRestaurant,
   getAllApprovedRestaurants,
-  getAllDeniedRestaurants
+  getAllDeniedRestaurants,
+  getAllPendingRestaurants
 };

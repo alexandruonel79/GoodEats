@@ -3,9 +3,9 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/auth');
-const adminRoutes = require('./routes/adminRoutes');  // Import new admin routes
 const userRoutes = require('./routes/userRoutes');  // Import user routes
 const restaurantRoutes = require('./routes/restaurantRoutes');  // Import restaurant routes
+const dashboardRoutes = require('./routes/dashboard');  // Import dashboard routes
 const bodyParser = require('body-parser');
 const path = require('path');
 
@@ -26,9 +26,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes); // Admin routes
 app.use('/api/user', userRoutes); // User routes
 app.use('/api/restaurant', restaurantRoutes); // Restaurant routes
+app.use('/api/dashboard', dashboardRoutes); // Dashboard routes
 
 // Sync database
 sequelize.sync().then(() => {

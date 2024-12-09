@@ -30,8 +30,9 @@ const Restaurant = sequelize.define(
       allowNull: false
     },  
     validated: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "pending",
     },
   },
   {
