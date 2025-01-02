@@ -78,6 +78,7 @@ const UserNavbar = () => {
           >
             <MenuItem component={Link} to="/account" onClick={handleClose}>Account Info</MenuItem>
             <MenuItem component={Link} to="/change-password" onClick={handleClose}>Change Password</MenuItem>
+            <MenuItem component={Link} to="/chat" onClick={handleClose}>Support Chat</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </Container>

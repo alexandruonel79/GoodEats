@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";  // Import ToastContainer
+import { toast, ToastContainer } from "react-toastify"; // Import ToastContainer
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import "./UserHomePage.css";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom"; // For navigation
 
 const UserHomePage = () => {
   const { token } = useAuth(); // Access token from the AuthContext
@@ -11,6 +12,7 @@ const UserHomePage = () => {
   const [newPost, setNewPost] = useState({ image: null, description: "" });
   const [newComments, setNewComments] = useState({}); // Store comments for each post
   const profilePictureCache = new Map(); // Cache for profile pictures
+  const navigate = useNavigate(); // Hook for navigation
 
   // Fetch all posts from the API
   useEffect(() => {
@@ -390,6 +392,31 @@ const UserHomePage = () => {
           </div>
         ))}
       </div>
+
+      <ToastContainer />
+    </div>
+  );
+
+  const openChat = () => {
+    navigate("/chat"); // Navigate to the chat page when the button is clicked
+  };
+
+  if (!token) {
+    return (
+      <div className="user-home-page">
+        <h2>You must be logged in to access this page.</h2>
+      </div>
+    );
+  }
+
+  return (
+    <div className="user-home-page">
+      {/* Existing post content (unchanged)... */}
+      
+      {/* Floating chat button */}
+      <button className="chat-button" onClick={openChat}>
+        💬 Chat
+      </button>
 
       <ToastContainer />
     </div>
