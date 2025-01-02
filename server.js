@@ -9,11 +9,15 @@ const dashboardRoutes = require('./routes/dashboard');  // Import dashboard rout
 const bodyParser = require('body-parser');
 const path = require('path');
 
-
+// Initialize dotenv
 dotenv.config();
 require('dotenv').config();
 
-const app = express();
+// Initialize express app
+const app = express(); // This should be declared here first
+
+// Import the chat routes after initializing the app
+const chatRoutes = require('./routes/chat');
 
 // Middleware - CORS configuration
 app.use(cors());
@@ -30,7 +34,10 @@ app.use('/api/user', userRoutes); // User routes
 app.use('/api/restaurant', restaurantRoutes); // Restaurant routes
 app.use('/api/dashboard', dashboardRoutes); // Dashboard routes
 
-// Sync database
+// Add the chat routes after other routes are defined
+app.use('/chat', chatRoutes);
+
+// Sync database and start server
 sequelize.sync().then(() => {
   console.log('Database synced');
   app.listen(process.env.PORT || 5000, () => {
