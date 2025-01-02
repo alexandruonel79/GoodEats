@@ -1,0 +1,25 @@
+.chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff; /* Blue background */
+    color: white; /* White icon */
+    border: none;
+    border-radius: 50%; /* Circular shape */
+    width: 60px;
+    height: 60px;
+    font-size: 28px; /* Emoji size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Hover effects */
+    z-index: 1000; /* Ensure it appears above all other content */
+  }
+  
+  .chat-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.1); /* Slight zoom-in effect */
+  }
+  

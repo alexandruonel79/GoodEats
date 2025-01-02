@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -19,17 +14,18 @@ import AccountInfo from "./pages/common/AccountInfo";
 import AdminRestaurantsDashboard from "./pages/admin/AdminRestaurantDashboard";
 import AdminPosts from "./pages/admin/AdminPosts";
 import Logs from "./pages/admin/Logs";
+import ChatPage from "./pages/common/ChatPage";
+import Layout from "./components/Layout"; // Import Layout component
 
 const App = () => {
   const { token, role } = useAuth();
 
-  // Protecting routes based on user role and authentication
   const ProtectedRoute = ({ children, allowedRoles }) => {
     if (!token) {
-      return <Navigate to="/login" />; // Redirect to login if not authenticated
+      return <Navigate to="/login" />;
     }
     if (!allowedRoles.includes(role)) {
-      return <Navigate to="/login" />; // Redirect if user doesn't have the required role
+      return <Navigate to="/login" />;
     }
     return children;
   };
@@ -41,141 +37,102 @@ const App = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/map" element={<UserMap />} />
-        {/* // change-password route */}
-        <Route
-          path="/change-password"
-          element={
-            <ProtectedRoute allowedRoles={["user", "admin"]}>
-              {/* Conditionally render the Navbar and Home Page */}
-              {role === "user" && (
-                <>
-                  <UserNavbar />
-                  <ChangePassword />
-                </>
-              )}
-              {role === "admin" && (
-                <>
-                  <AdminNavbar />
-                  <ChangePassword />
-                </>
-              )}
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/account"
-          element={
-            <ProtectedRoute allowedRoles={["user", "admin"]}>
-              {/* Conditionally render the Navbar and Account Info based on role */}
-              {role === "user" && (
-                <>
-                  <UserNavbar />
-                  <AccountInfo />
-                </>
-              )}
-              {role === "admin" && (
-                <>
-                  <AdminNavbar />
-                  <AccountInfo />
-                </>
-              )}
-            </ProtectedRoute>
-          }
-        />
 
-        {/* Protected Routes */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute allowedRoles={["user", "admin"]}>
-              {/* Conditionally render the Navbar and Home Page */}
-              {role === "user" && (
-                <>
-                  <UserNavbar />
-                  <UserHomePage />
-                </>
-              )}
-              {role === "admin" && (
-                <>
-                  <AdminNavbar />
-                  <AdminHomePage />
-                </>
-              )}
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Role-specific Home Pages */}
-        <Route
-          path="/adminHome"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <AdminNavbar />
-              <AdminHomePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin-restaurants-dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <AdminNavbar />
-              <AdminRestaurantsDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-<Route
-          path="/manage-posts"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <AdminNavbar />
-              <AdminPosts />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/logs"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <AdminNavbar />
-              <Logs />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/userHome"
-          element={
-            <ProtectedRoute allowedRoles={["user"]}>
-              <UserNavbar />
-              <UserHomePage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* User Restaurants Page */}
-        <Route
-          path="/restaurants"
-          element={
-            <ProtectedRoute allowedRoles={["user"]}>
-              <UserNavbar />
-              <UserRestaurants />
-            </ProtectedRoute>
-          }
-        />
-        {/* User Map Page */}
-        <Route
-          path="/map"
-          element={
-            <ProtectedRoute allowedRoles={["user"]}>
-              <UserNavbar />
-              <UserMap />
-            </ProtectedRoute>
-          }
-        />
+        {/* Wrap Protected Routes with Layout */}
+        <Route element={<Layout />}>
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute allowedRoles={["user", "admin"]}>
+                {role === "user" && (
+                  <>
+                    <UserNavbar />
+                    <ChatPage />
+                  </>
+                )}
+                {role === "admin" && (
+                  <>
+                    <AdminNavbar />
+                    <ChatPage />
+                  </>
+                )}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute allowedRoles={["user", "admin"]}>
+                {role === "user" && (
+                  <>
+                    <UserNavbar />
+                    <UserHomePage />
+                  </>
+                )}
+                {role === "admin" && (
+                  <>
+                    <AdminNavbar />
+                    <AdminHomePage />
+                  </>
+                )}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-restaurants-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminNavbar />
+                <AdminRestaurantsDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manage-posts"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminNavbar />
+                <AdminPosts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/logs"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminNavbar />
+                <Logs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/userHome"
+            element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <UserNavbar />
+                <UserHomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/restaurants"
+            element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <UserNavbar />
+                <UserRestaurants />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/map"
+            element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <UserNavbar />
+                <UserMap />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
       </Routes>
     </Router>
   );
