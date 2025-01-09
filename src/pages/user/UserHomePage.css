@@ -1,285 +1,222 @@
-.user-home-page {
-    font-family: Arial, sans-serif;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .add-post {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .add-post input[type="text"],
-  .add-post input[type="file"] {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .add-post button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .add-post button:hover {
-    background-color: #0056b3;
-  }
-  
-  .preview-image {
-    width: 100%;
-    height: auto;
-    margin-top: 10px;
-  }
-  
-  .post-list {
-    margin-top: 20px;
-  }
-  
-  .post {
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  .post-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background-color: #f9f9f9;
-  }
-  
-  .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .user-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-  }
-  
-  .post-description {
-    flex-grow: 1;
-  }
-  
-  .like-btn {
-    background-color: transparent;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .like-btn.liked {
-    color: red;
-  }
-  
-  .post-image {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-  }
-  
-  .comments-section {
-    padding: 10px;
-    background-color: #f7f7f7;
-  }
-  
-  .comment {
-    background-color: #fff;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-  }
-  
-  .add-comment {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .add-comment input {
-    flex-grow: 1;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .comment-btn {
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .comment-btn:hover {
-    background-color: #218838;
-  }
-  .post {
-    margin: 20px 0;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-  }
-  
-  .post-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .user-profile {
-    display: flex;
-    align-items: center;
-  }
-  
-  .user-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .user-name {
-    font-weight: bold;
-    font-size: 1.2em;
-  }
-  
-  .post-body {
-    margin-top: 10px;
-  }
-  
-  .post-description {
-    font-size: 1em;
-    margin-bottom: 10px;
-  }
-  
-  .post-image {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-top: 10px;
-  }
-  
-  .comments-section {
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-  }
-  
-  .comment {
-    margin-bottom: 10px;
-  }
-  
-  .add-comment {
-    display: flex;
-    align-items: center;
-  }
-  
-  .add-comment input {
-    flex: 1;
-    padding: 5px;
-    margin-right: 10px;
-  }
-  
-  .add-comment button {
-    padding: 5px 10px;
-    cursor: pointer;
-  }
-
-  /* Style for the user profile image (circular) */
-.user-avatar, .comment-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%; /* Makes the image circular */
-  object-fit: cover; /* Ensures the image covers the area without distortion */
-  margin-right: 10px; /* Adds some space between the image and the text */
+/* Global Styles */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Style for the comment section */
-.comment-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-}
-/* Style for the Like button */
-.like-button {
-  background-color: #007bff; /* Blue background for the like button */
-  color: white; /* White text color */
-  border: none; /* Removes border */
-  padding: 8px 16px; /* Adds padding */
-  border-radius: 20px; /* Rounded corners */
-  cursor: pointer; /* Makes it look clickable */
-  font-size: 14px; /* Sets the font size */
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+/* Light Theme */
+.light-main-content {
+  background: url('../../../public/light_background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  padding-top: 60px;
 }
 
-.like-button:hover {
-  background-color: #0056b3; /* Darker blue when hovered */
+.light-main-content .user-home-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 25px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-.like-button:disabled {
-  background-color: #d3d3d3; /* Gray background when disabled */
-  cursor: not-allowed; /* Disable cursor when button is disabled */
+.light-main-content .post,
+.light-main-content .comment {
+  background-color: #ffffff;
+  color: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-/* Comment section style */
-.comment {
-  margin-bottom: 15px;
+.light-main-content .post:hover,
+.light-main-content .comment:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
-.comment-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
+.light-main-content .post-header,
+.light-main-content .comment-header {
+  background-color: #f8f8f8;
+  color: #333;
+  padding: 10px;
+  border-bottom: 1px solid #e5e5e5;
 }
 
-/* Style for the comment's profile image (circle) */
-.comment-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
+.light-main-content .like-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Position like button below the text */
-.comment-footer {
-  display: flex;
-  justify-content: flex-start; /* Align the button to the left */
-  margin-top: 10px;
+.light-main-content .like-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
 
-/* Post section style */
-.post {
-  margin-bottom: 25px;
+.light-main-content .like-button:active {
+  background-color: #003f7f;
+  transform: scale(1);
 }
 
-.post-body {
-  margin-bottom: 15px;
+.light-main-content .like-button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  color: #a0a0a0;
 }
 
-.post-footer {
-  display: flex;
-  justify-content: flex-start; /* Align the button to the left */
-  margin-top: 10px;
+.light-main-content .post-body,
+.light-main-content .comments-section {
+  background-color: #f7f7f7;
+  padding: 15px;
 }
 
+.light-main-content .add-post button {
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-  
-  
-  
+.light-main-content .add-post button:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.light-main-content .add-post button:active {
+  background-color: #003f7f;
+  transform: translateY(0);
+}
+
+.light-main-content .add-post button:disabled {
+  background-color: #d3d3d3;
+  cursor: not-allowed;
+}
+
+.light-main-content .add-post button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.6);
+}
+
+/* Dark Theme */
+.dark-main-content {
+  background: url('../../../public/dark_background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  padding-top: 60px;
+}
+
+.dark-main-content .user-home-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 25px;
+  background-color: rgba(30, 30, 30, 0.85);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dark-main-content .post,
+.dark-main-content .comment {
+  background-color: #2a2a2a;
+  color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.dark-main-content .post:hover,
+.dark-main-content .comment:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.dark-main-content .post-header,
+.dark-main-content .comment-header {
+  background-color: #1e1e1e;
+  color: #fff;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.dark-main-content .like-button {
+  background-color: #bb86fc;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dark-main-content .like-button:hover {
+  background-color: #8a4bff;
+  transform: scale(1.05);
+}
+
+.dark-main-content .like-button:active {
+  background-color: #6200ea;
+  transform: scale(1);
+}
+
+.dark-main-content .like-button:disabled {
+  background-color: #4a4a4a;
+  cursor: not-allowed;
+  color: #a0a0a0;
+}
+
+.dark-main-content .post-body,
+.dark-main-content .comments-section {
+  background-color: #333;
+  padding: 15px;
+}
+
+.dark-main-content .add-post button {
+  padding: 14px 28px;
+  font-size: 18px;
+  background: linear-gradient(135deg, #bb86fc, #6200ea);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dark-main-content .add-post button:hover {
+  background-color: #8a4bff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.dark-main-content .add-post button:active {
+  background-color: #6200ea;
+  transform: translateY(0);
+}
+
+.dark-main-content .add-post button:disabled {
+  background-color: #2c2c2c;
+  cursor: not-allowed;
+}
+
+.dark-main-content .add-post button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(186, 134, 252, 0.7);
+}

@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { toast, ToastContainer } from "react-toastify"; // Import ToastContainer here
 import { useAuth } from "../../context/AuthContext";
+import './UserRestaurants.css'; // Assuming the CSS is in the same folder as the component
 
 const UserRestaurants = () => {
   const { token } = useAuth(); // Access token from AuthContext
@@ -112,23 +113,22 @@ const UserRestaurants = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <div className={`${localStorage.getItem('theme') === 'dark' ? 'dark-container' : 'light-container'}`}>
       <br />
-      <Typography variant="h4" align="center" gutterBottom>
-        Restaurant suggestion
+      <Typography variant="h4" className="title" align="center">
+        Restaurant Suggestion
       </Typography>
-
+  
       {/* Add Restaurant Form */}
-      <Box component="form" noValidate autoComplete="off" sx={{ mb: 4 }}>
-        <Grid container spacing={2}>
+      <Box component="form" noValidate autoComplete="off" className="form">
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={4}>
             <TextField
               label="Name"
               fullWidth
               value={newRestaurant.name}
-              onChange={(e) =>
-                setNewRestaurant({ ...newRestaurant, name: e.target.value })
-              }
+              onChange={(e) => setNewRestaurant({ ...newRestaurant, name: e.target.value })}
+              className="form-field"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -136,9 +136,8 @@ const UserRestaurants = () => {
               label="Longitude"
               fullWidth
               value={newRestaurant.longitude}
-              onChange={(e) =>
-                setNewRestaurant({ ...newRestaurant, longitude: e.target.value })
-              }
+              onChange={(e) => setNewRestaurant({ ...newRestaurant, longitude: e.target.value })}
+              className="form-field"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -146,9 +145,8 @@ const UserRestaurants = () => {
               label="Latitude"
               fullWidth
               value={newRestaurant.latitude}
-              onChange={(e) =>
-                setNewRestaurant({ ...newRestaurant, latitude: e.target.value })
-              }
+              onChange={(e) => setNewRestaurant({ ...newRestaurant, latitude: e.target.value })}
+              className="form-field"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -156,9 +154,8 @@ const UserRestaurants = () => {
               label="Cuisine"
               fullWidth
               value={newRestaurant.cuisine}
-              onChange={(e) =>
-                setNewRestaurant({ ...newRestaurant, cuisine: e.target.value })
-              }
+              onChange={(e) => setNewRestaurant({ ...newRestaurant, cuisine: e.target.value })}
+              className="form-field"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -166,9 +163,8 @@ const UserRestaurants = () => {
               label="Rating"
               fullWidth
               value={newRestaurant.rating}
-              onChange={(e) =>
-                setNewRestaurant({ ...newRestaurant, rating: e.target.value })
-              }
+              onChange={(e) => setNewRestaurant({ ...newRestaurant, rating: e.target.value })}
+              className="form-field"
             />
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -176,9 +172,8 @@ const UserRestaurants = () => {
               label="Website"
               fullWidth
               value={newRestaurant.website}
-              onChange={(e) =>
-                setNewRestaurant({ ...newRestaurant, website: e.target.value })
-              }
+              onChange={(e) => setNewRestaurant({ ...newRestaurant, website: e.target.value })}
+              className="form-field"
             />
           </Grid>
           <Grid item xs={12}>
@@ -186,15 +181,17 @@ const UserRestaurants = () => {
               variant="contained"
               color="primary"
               onClick={handleAddRestaurant}
+              className="add-button"
+              fullWidth
             >
               Add Restaurant
             </Button>
           </Grid>
         </Grid>
       </Box>
-
+  
       {/* Filter Toggle */}
-      <Box sx={{ mb: 4, display: "flex", justifyContent: "center" }}>
+      <Box className="filter-toggle" sx={{ mb: 4 }}>
         <ToggleButtonGroup
           value={filter}
           exclusive
@@ -212,51 +209,47 @@ const UserRestaurants = () => {
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-
+  
       {/* Restaurant List */}
       <Box>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h5" gutterBottom align="center">
           {filter === "approved"
             ? "Approved Restaurants"
             : filter === "denied"
             ? "Denied Restaurants"
             : "Pending Restaurants"}
         </Typography>
-        <Grid container spacing={2}>
+        <div className="restaurant-list">
           {restaurants.length === 0 ? (
             <Typography variant="body1" align="center" sx={{ width: "100%" }}>
               No restaurants found.
             </Typography>
           ) : (
             restaurants.map((restaurant) => (
-              <Grid item xs={12} sm={6} key={restaurant.id}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">{restaurant.name}</Typography>
-                    <Typography color="text.secondary">
-                      {restaurant.location} - {restaurant.category}
-                    </Typography>
-                    <Typography variant="body2">
-                      Validated: {restaurant.validated}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Typography variant="caption">
-                      Proposed:{" "}
-                      {new Date(restaurant.createdAt).toLocaleString()}
-                    </Typography>
-                  </CardActions>
-                </Card>
-              </Grid>
+              <div className="restaurant-card" key={restaurant.id}>
+                <Typography className="restaurant-card-header">{restaurant.name}</Typography>
+                <Typography color="text.secondary">
+                  {restaurant.location} - {restaurant.category}
+                </Typography>
+                <Typography variant="body2">
+                  Validated: {restaurant.validated}
+                </Typography>
+                <div className="restaurant-card-footer">
+                  <Typography variant="caption">
+                    Proposed: {new Date(restaurant.createdAt).toLocaleString()}
+                  </Typography>
+                </div>
+              </div>
             ))
           )}
-        </Grid>
+        </div>
       </Box>
-
+  
       {/* Add Toastify Container here */}
       <ToastContainer />
-    </Container>
+    </div>
   );
+  
 };
 
 export default UserRestaurants;

@@ -30,12 +30,12 @@ const UserHomePage = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       const postsWithDetails = await Promise.all(
         response.data.map(async (post) => {
           const userId = post.userId;
           let profilePictureUrl = "https://via.placeholder.com/50";
-  
+
           // Fetch profile picture for the post's user
           if (userId) {
             if (profilePictureCache.has(userId)) {
@@ -61,7 +61,7 @@ const UserHomePage = () => {
               }
             }
           }
-  
+
           // Check if the post is already liked by the user
           const postLikeResponse = await axios.get(
             `http://localhost:5000/api/user/posts/${post.id}/liked`,
@@ -72,13 +72,13 @@ const UserHomePage = () => {
             }
           );
           const isPostLiked = postLikeResponse.data.userLikedPost;
-  
+
           // Pre-fetch profile pictures for comment users
           const commentsWithPictures = await Promise.all(
             post.comments.map(async (comment) => {
               const commentUserId = comment.userId;
               let commentProfilePictureUrl = "https://via.placeholder.com/50";
-  
+
               if (commentUserId) {
                 if (profilePictureCache.has(commentUserId)) {
                   commentProfilePictureUrl = profilePictureCache.get(
@@ -107,7 +107,7 @@ const UserHomePage = () => {
                   }
                 }
               }
-  
+
               // Check if the comment is already liked by the user
               const commentLikeResponse = await axios.get(
                 `http://localhost:5000/api/user/comments/${comment.id}/liked`,
@@ -118,7 +118,7 @@ const UserHomePage = () => {
                 }
               );
               const isCommentLiked = commentLikeResponse.data.userLikedComment;
-  
+
               return {
                 ...comment,
                 profilePictureUrl: commentProfilePictureUrl,
@@ -126,7 +126,7 @@ const UserHomePage = () => {
               };
             })
           );
-  
+
           return {
             ...post,
             profilePictureUrl,
@@ -135,14 +135,14 @@ const UserHomePage = () => {
           };
         })
       );
-  
+
       setPosts(postsWithDetails);
     } catch (error) {
       console.error("Error fetching posts:", error);
       toast.error("Failed to load posts. Please try again later.");
     }
   };
-  
+
 
   const handleAddPost = async () => {
     if (!newPost.description || !newPost.image) {
@@ -294,132 +294,107 @@ const UserHomePage = () => {
   }
 
   return (
-    <div className="user-home-page">
-      <div className="add-post">
-        <input
-          type="text"
-          placeholder="Description"
-          value={newPost.description}
-          onChange={(e) =>
-            setNewPost({ ...newPost, description: e.target.value })
-          }
-        />
-        <input type="file" accept="image/*" onChange={handleImageChange} />
-        <button onClick={handleAddPost}>Add Post</button>
-        {newPost.image && (
-          <img
-            src={URL.createObjectURL(newPost.image)}
-            alt="New Post"
-            className="preview-image"
-          />
-        )}
-      </div>
-
-      <div className="post-list">
-        {posts.map((post) => (
-          <div key={post.id} className="post">
-            <div className="post-header">
-              <div className="user-profile">
-                <img
-                  src={post.profilePictureUrl}
-                  alt="User Profile"
-                  className="user-avatar"
-                />
-                {/* <p className="post-time">{post.createdAt}</p> */}
-                {/* // format the date
-                 */}
-                <p className="post-time">{post.createdAt}</p>
-                <p className="user-name">{post.user?.name || "Unknown User"}</p>
-              </div>
-            </div>
-            <div className="post-body">
-              <p className="post-description">{post.description}</p>
-              <img src={post.image} alt="Post" className="post-image" />
-              <div className="like-button-container">
-                <button
-                  onClick={() => handleLikePost(post.id, post.isLiked)}
-                  className="like-button"
-                >
-                  {post.isLiked ? "Unlike" : "Like"} Post
-                </button>
-                {/* add the like count */}
-                <p className="like-count">{post.likes} Likes </p>
-              </div>
-              <div className="comments">
-                {post.comments.map((comment) => (
-                  <div key={comment.id} className="comment">
-                    <div className="comment-header">
-                      <img
-                        src={comment.profilePictureUrl}
-                        alt="User Profile"
-                        className="comment-avatar"
-                      />
-                      <p className="comment-user-name">{comment.user?.name}</p>
-                      <p className="comment-time">{comment.createdAt}</p>
-                    </div>
-                    <p>{comment.text}</p>
-                    <p className="like-count">{comment.likes} Likes</p>
-                    <div className="like-button-container">
-                      <button
-                        onClick={() =>
-                          handleLikeComment(comment.id, comment.isLiked)
+    <>
+      <div className={`main-content ${localStorage.getItem('theme') === 'dark' ? 'dark-main-content' : 'light-main-content'}`}>
+        <div className="user-home-page">
+          <div className="add-post">
+            <input
+              type="text"
+              placeholder="Description"
+              value={newPost.description}
+              onChange={(e) =>
+                setNewPost({ ...newPost, description: e.target.value })
+              }
+            />
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+            <button onClick={handleAddPost}>Add Post</button>
+            {newPost.image && (
+              <img
+                src={URL.createObjectURL(newPost.image)}
+                alt="New Post"
+                className="preview-image"
+              />
+            )}
+          </div>
+  
+          <div className="post-list">
+            {posts.map((post) => (
+              <div key={post.id} className="post">
+                <div className="post-header">
+                  <div className="user-profile">
+                    <img
+                      src={post.profilePictureUrl}
+                      alt="User Profile"
+                      className="user-avatar"
+                    />
+                    <p className="post-time">{post.createdAt}</p>
+                    <p className="user-name">{post.user?.name || "Unknown User"}</p>
+                  </div>
+                </div>
+                <div className="post-body">
+                  <p className="post-description">{post.description}</p>
+                  <img src={post.image} alt="Post" className="post-image" />
+                  <div className="like-button-container">
+                    <button
+                      onClick={() => handleLikePost(post.id, post.isLiked)}
+                      className="like-button"
+                    >
+                      {post.isLiked ? "Unlike" : "Like"} Post
+                    </button>
+                    <p className="like-count">{post.likes} Likes </p>
+                  </div>
+                  <div className="comments">
+                    {post.comments.map((comment) => (
+                      <div key={comment.id} className="comment">
+                        <div className="comment-header">
+                          <img
+                            src={comment.profilePictureUrl}
+                            alt="User Profile"
+                            className="comment-avatar"
+                          />
+                          <p className="comment-user-name">{comment.user?.name}</p>
+                          <p className="comment-time">{comment.createdAt}</p>
+                        </div>
+                        <p>{comment.text}</p>
+                        <p className="like-count">{comment.likes} Likes</p>
+                        <div className="like-button-container">
+                          <button
+                            onClick={() =>
+                              handleLikeComment(comment.id, comment.isLiked)
+                            }
+                            className="like-button"
+                          >
+                            {comment.isLiked ? "Unlike" : "Like"} Comment
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="add-post">
+                      <input
+                        type="text"
+                        value={newComments[post.id] || ""}
+                        onChange={(e) =>
+                          setNewComments({
+                            ...newComments,
+                            [post.id]: e.target.value,
+                          })
                         }
-                        className="like-button"
-                      >
-                        {comment.isLiked ? "Unlike" : "Like"} Comment
+                        placeholder="Add a comment..."
+                      />
+                      <button onClick={() => handleAddComment(post.id)}>
+                        Add Comment
                       </button>
                     </div>
                   </div>
-                ))}
-                <div className="add-post">
-                  <input
-                    type="text"
-                    value={newComments[post.id] || ""}
-                    onChange={(e) =>
-                      setNewComments({
-                        ...newComments,
-                        [post.id]: e.target.value,
-                      })
-                    }
-                    placeholder="Add a comment..."
-                  />
-                  <button onClick={() => handleAddComment(post.id)}>
-                    Add Comment
-                  </button>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-
+  
       <ToastContainer />
-    </div>
-  );
-
-  const openChat = () => {
-    navigate("/chat"); // Navigate to the chat page when the button is clicked
-  };
-
-  if (!token) {
-    return (
-      <div className="user-home-page">
-        <h2>You must be logged in to access this page.</h2>
-      </div>
-    );
-  }
-
-  return (
-    <div className="user-home-page">
-      {/* Existing post content (unchanged)... */}
-      
-      {/* Floating chat button */}
-      <button className="chat-button" onClick={openChat}>
-        💬 Chat
-      </button>
-
-      <ToastContainer />
-    </div>
+    </>
   );
 };
 

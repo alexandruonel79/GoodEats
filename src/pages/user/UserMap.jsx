@@ -18,12 +18,13 @@ import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Graphic from "@arcgis/core/Graphic";
 import Search from "@arcgis/core/widgets/Search";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
+import './UserMap.css'; // Assuming the CSS is in the same folder as the component
 
 const UserMap = () => {
   const mapRef = useRef(null);
   const { token } = useAuth();
 
-  const [cuisine, setCuisine] = useState("");
+  const [cuisine, setCuisine] = useState("All");
   const [rating, setRating] = useState(0);
   const [distance, setDistance] = useState(5000); // Default distance: 5km
   const [restaurantData, setRestaurantData] = useState([]);
@@ -32,6 +33,7 @@ const UserMap = () => {
   // Function to display points on the map
   const displayPoints = (data, layer) => {
     layer.removeAll(); // Clear existing graphics
+
     data.forEach((item) => {
       const point = {
         type: "point",
@@ -39,25 +41,34 @@ const UserMap = () => {
         latitude: item.latitude,
       };
 
+      // Enhanced Symbol for markers
       const symbol = {
         type: "simple-marker",
-        color: "blue",
-        size: "8px",
+        color: [24, 114, 200], // Blue color
+        size: "12px", // Bigger size for visibility
         outline: {
-          color: "white",
-          width: 1,
+          color: [255, 255, 255], // White outline
+          width: 2, // Thicker outline
         },
+        shadowColor: "rgba(0, 0, 0, 0.2)", // Subtle shadow for depth
+        shadowBlur: 5, // Blur effect for shadow
+        shadowOffsetX: 3, // Offset for shadow effect
+        shadowOffsetY: 3,
       };
 
+      // Custom Popup Template
       const popupTemplate = {
         title: "{name}",
         content: `
-          <b>Cuisine:</b> {cuisine}<br>
-          <b>Rating:</b> {rating}<br>
-          <b>Website:</b> <a href="{website}" target="_blank">{website}</a>
-        `,
+        <div class="popup-title">${item.name}</div>
+        <div><b>Cuisine:</b> <span class="popup-cuisine">${item.cuisine}</span></div>
+        <div><b>Rating:</b> <span class="popup-rating">${item.rating}</span> ★</div>
+        <div><b>Website:</b> <a href="${item.website}" target="_blank" class="popup-link">${item.website}</a></div>
+        <div class="popup-footer">Click for details</div>
+      `,
       };
 
+      // Custom Attributes
       const attributes = {
         name: item.name,
         rating: item.rating,
@@ -72,9 +83,11 @@ const UserMap = () => {
         popupTemplate: popupTemplate,
       });
 
+      // Add graphic to the layer
       layer.add(graphic);
     });
   };
+
 
   useEffect(() => {
     let view;
@@ -108,14 +121,21 @@ const UserMap = () => {
         setRestaurantData(data); // Store fetched data in state
         displayPoints(data, layer);
 
-        // Add Search Widget
+        // Add Search Widget with Enhanced Styling
         const searchWidget = new Search({
           view: view,
           placeholder: "Search for a location or restaurant",
+          // You can customize the search widget here, like setting more properties
         });
+
+        // Add the search widget to the UI in a styled container
         view.ui.add(searchWidget, {
           position: "top-right",
+          index: 2, // Adjust index if needed to avoid overlap with other widgets
         });
+
+        // Apply custom styles using JavaScript or add a class to the widget
+        searchWidget.domNode.classList.add("custom-search-widget");
 
         // Handle search results
         searchWidget.on("select-result", (event) => {
@@ -174,7 +194,7 @@ const UserMap = () => {
     if (!graphicsLayer) return;
 
     const filteredData = restaurantData.filter((item) => {
-      const matchesCuisine = cuisine ? item.cuisine === cuisine : true;
+      const matchesCuisine = cuisine !== 'All' ? item.cuisine === cuisine : true;
       const matchesRating = item.rating >= rating;
       return matchesCuisine && matchesRating;
     });
@@ -183,52 +203,45 @@ const UserMap = () => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h4" align="center" gutterBottom>
-        Explore Restaurants on the Map
-      </Typography>
+    <div className={`container ${localStorage.getItem('theme') === 'dark' ? 'dark-container' : 'light-container'}`}>
+      <Container maxWidth="lg">
+        {/* Filter Panel */}
+        <Box className="filter-panel">
+          <FormControl>
+            <Typography gutterBottom>Cuisine</Typography>
+            <Select value={cuisine} onChange={(e) => setCuisine(e.target.value)}>
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Romanian">Romanian</MenuItem>
+              <MenuItem value="Japanese">Japanese</MenuItem>
+              {/* Add more cuisines */}
+            </Select>
+          </FormControl>
 
-      {/* Filter Panel */}
-      <Box display="flex" justifyContent="space-between" marginBottom={2} flexWrap="wrap" gap={2}>
-        <FormControl>
-          <InputLabel>Cuisine</InputLabel>
-          <Select value={cuisine} onChange={(e) => setCuisine(e.target.value)}>
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="Romanian">Romanian</MenuItem>
-            <MenuItem value="Japanese">Japanese</MenuItem>
-            {/* Add more cuisines */}
-          </Select>
-        </FormControl>
+          <FormControl>
+            <Typography gutterBottom>Minimum Rating</Typography>
+            <Slider
+              value={rating}
+              onChange={(e, value) => setRating(value)}
+              step={0.5}
+              marks
+              min={0}
+              max={5}
+              valueLabelDisplay="auto"
+            />
+          </FormControl>
 
-        <FormControl>
-          <Typography gutterBottom>Minimum Rating</Typography>
-          <Slider
-            value={rating}
-            onChange={(e, value) => setRating(value)}
-            step={0.5}
-            marks
-            min={0}
-            max={5}
-            valueLabelDisplay="auto"
-          />
-        </FormControl>
+          <Button variant="contained" color="primary" onClick={applyFilters}>
+            Apply Filters
+          </Button>
+        </Box>
 
-        <Button variant="contained" color="primary" onClick={applyFilters}>
-          Apply Filters
-        </Button>
-      </Box>
-
-      {/* Map Container */}
-      <Box
-        ref={mapRef}
-        sx={{
-          width: "100%",
-          height: "80vh",
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-        }}
-      ></Box>
-    </Container>
+        {/* Map Container */}
+        <Box
+          ref={mapRef}
+          className="map-container"
+        ></Box>
+      </Container>
+    </div>
   );
 };
 

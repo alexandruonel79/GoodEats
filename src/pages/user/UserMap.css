@@ -1,0 +1,333 @@
+/* Light Container */
+.light-container {
+    width: 100%;
+    min-height: 100vh;
+    background-image: url('../../../public/light_background.jpg');
+    /* Add your background image here */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Light Container */
+.light-container .filter-panel {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Slight background to separate from main content */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* Soft shadow */
+}
+
+/* Form Controls (inputs, selects) */
+.light-container .filter-panel .MuiFormControl-root {
+    flex: 1;
+    min-width: 240px;
+    max-width: 320px;
+    margin: 10px 0;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Soft shadow */
+    transition: box-shadow 0.3s ease;
+    text-align: center;
+    /* Center the label and input */
+}
+
+/* Hover effect for Form Controls */
+.light-container .filter-panel .MuiFormControl-root:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    /* Enhance shadow on hover */
+}
+
+/* Styling for Slider */
+.light-container .filter-panel .MuiSlider-root {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    /* Center the label and slider */
+}
+
+/* Button Styling */
+.light-container .filter-panel .MuiButton-root {
+    background-color: #1976d2;
+    color: white;
+    padding: 12px 24px;
+    text-transform: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    /* Bold text */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    display: block;
+    /* Ensure button is block-level for proper centering */
+    margin: 0 auto;
+    /* Center the button */
+}
+
+/* Hover and Active states for Button */
+.light-container .filter-panel .MuiButton-root:hover {
+    background-color: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.light-container .filter-panel .MuiButton-root:active {
+    background-color: #003f7f;
+    transform: translateY(0);
+}
+
+/* Input Fields (including Select) */
+.light-container .filter-panel .MuiInputBase-root {
+    margin-bottom: 15px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: normal;
+    /* Regular font weight for input text */
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    /* Center the text inside input */
+}
+
+/* Focused Input Fields */
+.light-container .filter-panel .MuiInputBase-root:focus-within {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* Enhance shadow on focus */
+}
+
+/* Label Styling (for inputs, selects) */
+.light-container .filter-panel .MuiInputLabel-root {
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    /* Subtle dark color for label */
+    text-align: center;
+    /* Center the label text */
+}
+
+/* For the Select component */
+.light-container .filter-panel .MuiSelect-root {
+    text-align: center;
+    /* Center the text inside select */
+}
+
+.light-container .map-container {
+    width: 100%;
+    height: 80vh;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+
+/* Dark Container */
+.dark-container {
+    width: 100%;
+    min-height: 100vh;
+    background-image: url('../../../public/dark_background.jpg');
+    /* Add your background image here */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Dark Container */
+.dark-container .filter-panel {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+    background-color: rgba(40, 40, 40, 0.9);
+    /* Dark background */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    /* Darker shadow */
+}
+
+/* Form Controls (inputs, selects) */
+.dark-container .filter-panel .MuiFormControl-root {
+    flex: 1;
+    min-width: 240px;
+    max-width: 320px;
+    margin: 10px 0;
+    background-color: #333;
+    /* Dark background for input */
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+    text-align: center;
+    color: #fff;
+    /* Light text inside inputs */
+}
+
+/* Hover effect for Form Controls */
+.dark-container .filter-panel .MuiFormControl-root:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    /* Darker hover shadow */
+}
+
+/* Styling for Slider */
+.dark-container .filter-panel .MuiSlider-root {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #ccc;
+    /* Lighter slider color */
+}
+
+/* Button Styling */
+.dark-container .filter-panel .MuiButton-root {
+    background-color: #1e88e5;
+    /* Button color in dark theme */
+    color: white;
+    padding: 12px 24px;
+    text-transform: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+/* Hover and Active states for Button */
+.dark-container .filter-panel .MuiButton-root:hover {
+    background-color: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.dark-container .filter-panel .MuiButton-root:active {
+    background-color: #003f7f;
+    transform: translateY(0);
+}
+
+/* Input Fields (including Select) */
+.dark-container .filter-panel .MuiInputBase-root {
+    margin-bottom: 15px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: normal;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    color: #fff;
+    /* Light text inside inputs */
+    background-color: #444;
+    /* Darker background for inputs */
+}
+
+/* Focused Input Fields */
+.dark-container .filter-panel .MuiInputBase-root:focus-within {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Label Styling (for inputs, selects) */
+.dark-container .filter-panel .MuiInputLabel-root {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ccc;
+    /* Light text color for label */
+    text-align: center;
+}
+
+/* For the Select component */
+.dark-container .filter-panel .MuiSelect-root {
+    text-align: center;
+    color: #fff;
+    /* Light text inside select */
+    background-color: #444;
+    /* Dark background for select */
+}
+
+
+.dark-container .map-container {
+    width: 100%;
+    height: 80vh;
+    border: 1px solid #555;
+    border-radius: 8px;
+}
+
+.dark-container .filter-panel .MuiButton-root {
+    background-color: #bb86fc;
+    /* Example color */
+    color: white;
+    padding: 10px 20px;
+    text-transform: none;
+}
+
+.dark-container .filter-panel .MuiButton-root:hover {
+    background-color: #8a4bff;
+    /* Example hover color */
+}
+
+/* Custom Search Widget Styles */
+.custom-search-widget {
+    background-color: #fff;
+    /* White background for clean look */
+    border-radius: 20px;
+    /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for depth */
+    padding: 5px 15px;
+    /* Padding for the input box */
+    font-size: 14px;
+    /* Larger font size for better readability */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-search-widget input {
+    width: 250px;
+    /* Adjust width for better user experience */
+    height: 40px;
+    /* Adjust height */
+    padding: 0 10px;
+    /* Padding for text inside the input */
+    font-size: 14px;
+    /* Font size */
+    border: 1px solid #ddd;
+    /* Light border */
+    border-radius: 20px;
+    /* Rounded input corners */
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.custom-search-widget input:focus {
+    border-color: #1976d2;
+    /* Change border color on focus */
+}
+
+.custom-search-widget .esri-icon-search {
+    color: #1976d2;
+    /* Customize the search icon color */
+    font-size: 18px;
+    /* Increase size of the search icon */
+    margin-left: 10px;
+    /* Add space between the input field and icon */
+}
+
+/* On mobile screens, adjust the search widget size */
+@media screen and (max-width: 768px) {
+    .custom-search-widget input {
+        width: 200px;
+        /* Smaller width for smaller screens */
+    }
+}
+

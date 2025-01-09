@@ -2,7 +2,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #007bff; /* Blue background */
+    background-color: #4b4b4b; /* Blue background */
     color: white; /* White icon */
     border: none;
     border-radius: 50%; /* Circular shape */
@@ -19,7 +19,7 @@
   }
   
   .chat-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #4b4b4b; /* Darker blue on hover */
     transform: scale(1.1); /* Slight zoom-in effect */
   }
   
