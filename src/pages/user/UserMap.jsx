@@ -18,13 +18,14 @@ import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Graphic from "@arcgis/core/Graphic";
 import Search from "@arcgis/core/widgets/Search";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
-import './UserMap.css'; // Assuming the CSS is in the same folder as the component
+import "./UserMap.css"; // Assuming the CSS is in the same folder as the component
 
 const UserMap = () => {
   const mapRef = useRef(null);
   const { token } = useAuth();
 
   const [cuisine, setCuisine] = useState("All");
+  const [cuisines, setCuisines] = useState(["All"]); // Default to "All"
   const [rating, setRating] = useState(0);
   const [distance, setDistance] = useState(5000); // Default distance: 5km
   const [restaurantData, setRestaurantData] = useState([]);
@@ -87,7 +88,6 @@ const UserMap = () => {
       layer.add(graphic);
     });
   };
-
 
   useEffect(() => {
     let view;
@@ -171,13 +171,16 @@ const UserMap = () => {
 
   const fetchPointsFromDatabase = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/restaurant/get-all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/restaurant/get-all",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -192,9 +195,12 @@ const UserMap = () => {
 
   const applyFilters = () => {
     if (!graphicsLayer) return;
+    // display for debug the cuisines
+    console.log(cuisine);
 
     const filteredData = restaurantData.filter((item) => {
-      const matchesCuisine = cuisine !== 'All' ? item.cuisine === cuisine : true;
+      const matchesCuisine =
+        cuisine !== "All" ? item.cuisine === cuisine : true;
       const matchesRating = item.rating >= rating;
       return matchesCuisine && matchesRating;
     });
@@ -202,18 +208,81 @@ const UserMap = () => {
     displayPoints(filteredData, graphicsLayer);
   };
 
+  // Fetch cuisines from the API
+  const fetchCuisines = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/restaurant/get-cuisines",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log(data);
+      
+      // Ensure `data` contains `cuisines`
+      if (!data || !Array.isArray(data)) {
+        throw new Error("Unexpected response format: 'cuisines' is missing");
+      }
+  
+      return data; // Assuming `data` is the array of cuisine objects
+    } catch (error) {
+      console.error("Error fetching cuisines from database:", error);
+      return [];
+    }
+  };
+  
+
+  useEffect(() => {
+    const loadCuisines = async () => {
+      try {
+        const fetchedCuisines = await fetchCuisines();
+    
+        // Extract cuisine names and ensure unique values
+        const cuisineNames = ["All", ...new Set(fetchedCuisines.map(item => item.cuisine))];
+    
+        setCuisines(cuisineNames);
+      } catch (error) {
+        console.error("Error loading cuisines:", error);
+      }
+    };
+    
+  
+    loadCuisines();
+  }, []);
+  
+
   return (
-    <div className={`container ${localStorage.getItem('theme') === 'dark' ? 'dark-container' : 'light-container'}`}>
+    <div
+      className={`container ${
+        localStorage.getItem("theme") === "dark"
+          ? "dark-container"
+          : "light-container"
+      }`}
+    >
       <Container maxWidth="lg">
         {/* Filter Panel */}
         <Box className="filter-panel">
           <FormControl>
             <Typography gutterBottom>Cuisine</Typography>
-            <Select value={cuisine} onChange={(e) => setCuisine(e.target.value)}>
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Romanian">Romanian</MenuItem>
-              <MenuItem value="Japanese">Japanese</MenuItem>
-              {/* Add more cuisines */}
+            <Select
+              value={cuisine}
+              onChange={(e) => setCuisine(e.target.value)}
+            >
+              {cuisines.map((cuisineName) => (
+                <MenuItem key={cuisineName} value={cuisineName}>
+                  {cuisineName}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 
@@ -236,10 +305,7 @@ const UserMap = () => {
         </Box>
 
         {/* Map Container */}
-        <Box
-          ref={mapRef}
-          className="map-container"
-        ></Box>
+        <Box ref={mapRef} className="map-container"></Box>
       </Container>
     </div>
   );

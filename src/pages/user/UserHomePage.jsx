@@ -23,6 +23,19 @@ const UserHomePage = () => {
     }
   }, [token]);
 
+  const formatDate = (isoDate) => {
+    const date = new Date(isoDate);
+    return date.toLocaleString("en-US", {
+      weekday: "short", // e.g., "Mon"
+      year: "numeric",
+      month: "short", // e.g., "Jan"
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true, // For 12-hour format
+    });
+  };
+
   const fetchPosts = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/user/posts", {
@@ -293,6 +306,8 @@ const UserHomePage = () => {
     );
   }
 
+  
+
   return (
     <>
       <div className={`main-content ${localStorage.getItem('theme') === 'dark' ? 'dark-main-content' : 'light-main-content'}`}>
@@ -327,7 +342,7 @@ const UserHomePage = () => {
                       alt="User Profile"
                       className="user-avatar"
                     />
-                    <p className="post-time">{post.createdAt}</p>
+                    <p className="post-time">{formatDate(post.createdAt)}</p>
                     <p className="user-name">{post.user?.name || "Unknown User"}</p>
                   </div>
                 </div>
@@ -353,7 +368,7 @@ const UserHomePage = () => {
                             className="comment-avatar"
                           />
                           <p className="comment-user-name">{comment.user?.name}</p>
-                          <p className="comment-time">{comment.createdAt}</p>
+                          <p className="comment-time">{formatDate(comment.createdAt)}</p>
                         </div>
                         <p>{comment.text}</p>
                         <p className="like-count">{comment.likes} Likes</p>
