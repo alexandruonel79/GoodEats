@@ -13,6 +13,8 @@ const {
   getAllApprovedRestaurants,
   getAllDeniedRestaurants,
   getAllPendingRestaurants,
+  getAllCuisines,
+  rateRestaurant
 } = require("../controllers/restaurantController");
 
 // Middleware to log all incoming requests
@@ -50,5 +52,10 @@ router.put("/:restaurantId/deny", authorize(["admin"]), denyRestaurant);
 
 // Route to delete a restaurant, only admins can delete restaurants
 router.delete("/:restaurantId/delete", authorize(["admin"]), deleteRestaurant);
+
+router.get("/get-cuisines", getAllCuisines);
+
+router.put("/rate/:restaurantId", rateRestaurant);
+
 
 module.exports = router;

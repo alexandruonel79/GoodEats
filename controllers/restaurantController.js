@@ -111,6 +111,37 @@ const getAllDeniedRestaurants = async (req, res) => {
   }
 };
 
+const getAllCuisines = async (req, res) => {
+  try {
+    const cuisines = await Restaurant.findAll({
+      attributes: ["cuisine"],
+      group: ["cuisine"],
+    });
+    res.status(200).json(cuisines);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const rateRestaurant = async (req, res) => {
+  try {
+    const restaurantId = req.params.restaurantId;
+    const restaurant = await Restaurant.findByPk(restaurantId);
+    if (!restaurant) {
+      return res.status(404).json({ error: "Restaurant not found" });
+    }
+
+    const rating = req.body.rating;
+    // make a mean of the ratings
+    const newRating = (restaurant.rating + rating) / 2;
+    restaurant.rating = newRating;
+    await restaurant.save();
+    res.status(200).json(restaurant);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // export functions
 module.exports = {
   addRestaurant,
@@ -120,5 +151,7 @@ module.exports = {
   deleteRestaurant,
   getAllApprovedRestaurants,
   getAllDeniedRestaurants,
-  getAllPendingRestaurants
+  getAllPendingRestaurants,
+  getAllCuisines,
+  rateRestaurant
 };
